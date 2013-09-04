@@ -66,27 +66,30 @@
                                     <constraint firstItem="gKH-gW-hmO" firstAttribute="leading" secondItem="1Z2-zw-em5" secondAttribute="leading" constant="199" id="jdD-It-bkI"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="20" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="UJz-66-Bar">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text=" " textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" minimumFontSize="15" preferredMaxLayoutWidth="528" translatesAutoresizingMaskIntoConstraints="NO" id="UJz-66-Bar">
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="34" id="R8Q-wg-LwR"/>
+                                    <constraint firstAttribute="height" constant="56" id="PiA-fT-7ku"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="29"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="24"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
+                                <color key="shadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <size key="shadowOffset" width="1" height="1"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="0q8-FJ-ekr" secondAttribute="trailing" constant="468" id="2to-9x-6eb"/>
+                            <constraint firstAttribute="trailing" secondItem="UJz-66-Bar" secondAttribute="trailing" constant="20" type="user" id="4fi-OL-D58"/>
+                            <constraint firstAttribute="trailing" secondItem="0q8-FJ-ekr" secondAttribute="trailing" constant="568" id="5IZ-3n-qAb"/>
                             <constraint firstItem="1Z2-zw-em5" firstAttribute="centerX" secondItem="UJz-66-Bar" secondAttribute="centerX" type="default" id="8KF-JL-uYp"/>
                             <constraint firstAttribute="bottom" secondItem="0q8-FJ-ekr" secondAttribute="bottom" constant="-10" id="9YK-Mg-dnB"/>
                             <constraint firstItem="0q8-FJ-ekr" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="Btc-rH-BL7"/>
+                            <constraint firstAttribute="bottom" secondItem="UJz-66-Bar" secondAttribute="bottom" constant="16" id="Lmb-Uf-qJA"/>
                             <constraint firstItem="1Z2-zw-em5" firstAttribute="top" secondItem="3" secondAttribute="top" constant="20" symbolic="YES" type="default" id="PjZ-c7-6sc"/>
                             <constraint firstAttribute="centerX" secondItem="UJz-66-Bar" secondAttribute="centerX" type="user" id="Rww-GI-Jgg"/>
-                            <constraint firstAttribute="bottom" secondItem="UJz-66-Bar" secondAttribute="bottom" constant="27" id="Xg6-17-yoi"/>
                             <constraint firstItem="jFN-nU-yDW" firstAttribute="leading" secondItem="3" secondAttribute="leading" type="default" id="Y9P-Pn-K3y"/>
-                            <constraint firstItem="UJz-66-Bar" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="eUY-Mt-pYs"/>
+                            <constraint firstItem="UJz-66-Bar" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="user" id="eUY-Mt-pYs"/>
                             <constraint firstItem="jFN-nU-yDW" firstAttribute="top" secondItem="3" secondAttribute="top" constant="-2" id="g3v-iY-jxa"/>
                             <constraint firstItem="0q8-FJ-ekr" firstAttribute="top" secondItem="3" secondAttribute="top" constant="290" id="rDN-kQ-W2k"/>
                             <constraint firstAttribute="bottom" secondItem="1Z2-zw-em5" secondAttribute="bottom" constant="79" id="zWI-r2-eaN"/>

@@ -10,7 +10,7 @@
 #import "GPUImage.h"
 #import "objc/runtime.h"
 
-#define blur 3
+#define blur 1.2
 
 static char operationKey;
 

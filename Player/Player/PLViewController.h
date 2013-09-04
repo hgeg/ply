@@ -16,6 +16,7 @@
     MPMediaItem *nowPlaying;
     NSInteger npDuration;
     NSArray *songs;
+    GPUImageGaussianBlurFilter *blurFilter;
 }
 @property (weak, nonatomic) IBOutlet UIButton *playButton;
 @property (weak, nonatomic) IBOutlet UIButton *nextButton;

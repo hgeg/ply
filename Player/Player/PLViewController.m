@@ -13,7 +13,7 @@
 #define itemChange MPMusicPlayerControllerNowPlayingItemDidChangeNotification
 #define stateChange MPMusicPlayerControllerPlaybackStateDidChangeNotification
 #define normal UIControlStateNormal
-#define blur 3.0
+#define blur 1.1
 #define height self.view.frame.size.height
 
 @interface PLViewController ()
@@ -30,7 +30,7 @@
 #pragma mark -
 #pragma mark View Controller Methods
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     [super viewDidLoad];
     
     /* Setting up the music player */
@@ -47,9 +47,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(itemChangeCallback) name:itemChange object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(stateChangeCallback) name:stateChange object:nil];
     
-    /* Pause the player and reset indicator just in case */
+    /* Pause the player just in case */
     [player pause];
-    [self updateIndicator];
     
 }
 
@@ -112,9 +111,9 @@
         
     if (artworkImage) {
         /* If found, apply blur filter and insert */
-        GPUImageGaussianBlurFilter *blurFilter =
-        [[GPUImageGaussianBlurFilter alloc] init];
+        blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
         blurFilter.blurSize = blur;
+        [blurFilter forceProcessingAtSize:CGSizeMake(300, 300)];
         [artworkView setImage:[blurFilter imageByFilteringImage:artworkImage]];
         
         /* Fade animation */
@@ -145,6 +144,11 @@
         
         [artworkView.layer addAnimation:transition forKey:nil];
     }
+    //Change artist name to Unknown Artist if not shown
+    if ([artistString isEqualToString:@""]) {
+        artistString = @"Unknown Artist";
+    }
+    
     /* Fade animation for label update */
     [UIView animateWithDuration:0.2 animations:^{
         infoLabel.alpha = 0.3;
@@ -162,7 +166,12 @@
 - (void) updateIndicator {
     /* update function for indicator at the bottom */
     [UIView animateWithDuration:0.5 animations:^{
-        playbackIndicator.frame = CGRectMake(0,318,[player currentPlaybackTime]*1.0*height/npDuration,2);
+        @try {
+            playbackIndicator.frame = CGRectMake(0,318,[player currentPlaybackTime]*1.0*height/npDuration,2);
+        }
+        @catch (NSException *exception) {
+            playbackIndicator.frame = CGRectMake(0,318,0,2);
+        }
     }];
 }
 
