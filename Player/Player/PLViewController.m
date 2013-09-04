@@ -106,7 +106,7 @@
     
     // Fetch the artwork from library
     UIImage *artworkImage = nil;
-    MPMediaItemArtwork *artwork = [nowPlaying valueForProperty: MPMediaItemPropertyArtwork];
+    MPMediaItemArtwork *artwork = [nowPlaying valueForProperty:MPMediaItemPropertyArtwork];
     artworkImage = [artwork imageWithSize: CGSizeMake (300, 300)];
         
     if (artworkImage) {
@@ -134,15 +134,14 @@
         NSString *imageURL = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&error];
         //NSLog(@"%@",imageURL);
         /* If fetching fails SDWebImage ensures that our placeholder is used */
-        [artworkView setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"placeholder.png"]];
-        
-        /* Fade animation */
-        CATransition *transition = [CATransition animation];
-        transition.duration = 0.2f;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        transition.type = kCATransitionFade;
-        
-        [artworkView.layer addAnimation:transition forKey:nil];
+        [artworkView setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"placeholder.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            /* Fade animation */
+            CATransition *transition = [CATransition animation];
+            transition.duration = 0.2f;
+            transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+            transition.type = kCATransitionFade;
+            [artworkView.layer addAnimation:transition forKey:nil];
+        }];
     }
     //Change artist name to Unknown Artist if not shown
     if ([artistString isEqualToString:@""]) {
