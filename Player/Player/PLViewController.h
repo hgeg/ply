@@ -17,12 +17,18 @@
     NSInteger npDuration;
     NSArray *songs;
     GPUImageGaussianBlurFilter *blurFilter;
+    CGPoint lastTouch;
+    NSTimer *touchTimer;
+    NSTimer *volumeTimer;
+    BOOL longTouch;
+    BOOL gu,gr,gd,gl;
 }
-@property (weak, nonatomic) IBOutlet UIButton *playButton;
-@property (weak, nonatomic) IBOutlet UIButton *nextButton;
+
 @property (weak, nonatomic) IBOutlet UIImageView *artworkView;
 @property (weak, nonatomic) IBOutlet UIView *playbackIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *infoLabel;
+@property (weak, nonatomic) IBOutlet UIView *overlay;
+@property (weak, nonatomic) IBOutlet UIView *menu;
 
 - (IBAction) playPause:(id)sender;
 - (IBAction) nextSong:(id)sender;

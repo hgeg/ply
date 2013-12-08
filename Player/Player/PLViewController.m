@@ -9,6 +9,8 @@
 #import "GPUImage.h"
 #import "PLViewController.h"
 #import "SDWebImage/UIImageView+WebCache.h"
+#import "UILabel+Glow.h"
+#import <math.h>
 
 #define itemChange MPMusicPlayerControllerNowPlayingItemDidChangeNotification
 #define stateChange MPMusicPlayerControllerPlaybackStateDidChangeNotification
@@ -16,13 +18,18 @@
 #define blur 1.1
 #define height self.view.frame.size.height
 
+#define up    point(120,24)
+#define right point(216,120)
+#define down  point(120,216)
+#define left  point(24,120)
+
 @interface PLViewController ()
 
 @end
 
 @implementation PLViewController
-@synthesize playButton;
-@synthesize nextButton;
+@synthesize overlay;
+@synthesize menu;
 @synthesize artworkView;
 @synthesize infoLabel;
 @synthesize playbackIndicator;
@@ -33,14 +40,23 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
     
+    /* add dummy volume indicator */
+    MPVolumeView *volumeView = [[MPVolumeView alloc] initWithFrame: rect(-1000, -1000, 0, 0)];
+    [volumeView setUserInteractionEnabled:NO];
+    volumeView.showsRouteButton = NO;
+    [self.view addSubview: volumeView];
+    
     /* Setting up the music player */
 	player = [MPMusicPlayerController iPodMusicPlayer];
     MPMediaQuery* query = [MPMediaQuery songsQuery];
     songs = [query items]; //Select from all songs in the library
-    MPMediaItem *randomTrack = [songs objectAtIndex:arc4random_uniform([songs count])];
-    [player setQueueWithItemCollection:[MPMediaItemCollection collectionWithItems:songs]];
-    [player setNowPlayingItem:randomTrack];
-    [player beginGeneratingPlaybackNotifications];
+    if([songs count]>0) {
+        MPMediaItem *randomTrack = [songs objectAtIndex:arc4random_uniform([songs count])];
+        [player setQueueWithItemCollection:[MPMediaItemCollection collectionWithItems:songs]];
+        [player setNowPlayingItem:randomTrack];
+        [player beginGeneratingPlaybackNotifications];
+    }
+     
     
     /* Subscribe to music player notifications */
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -49,6 +65,14 @@
     
     /* Pause the player just in case */
     [player pause];
+    
+    /* Hide the overlay view*/
+    overlay.alpha = 0;
+    
+    gu = false;
+    gr = false;
+    gd = false;
+    gl = false;
     
 }
 
@@ -79,15 +103,19 @@
     [player skipToNextItem];
 }
 
+- (IBAction) prevSong:(id)sender {
+    /* Just go to next song */
+    [player skipToPreviousItem];
+}
+
 - (void) stateChangeCallback{
     /* Play/Pause callback
      * change the button image and reset the indicator counter.
      */
     if ([player playbackState] == MPMusicPlaybackStatePlaying) {
-        [playButton setImage:[UIImage imageNamed:@"pause.png"] forState:normal];
+        
         playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(updateIndicator) userInfo:nil repeats:YES];
     } else {
-        [playButton setImage:[UIImage imageNamed:@"play.png"] forState:normal];
         [playbackTimer invalidate];
     }
 }
@@ -114,7 +142,9 @@
         blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
         blurFilter.blurSize = blur;
         [blurFilter forceProcessingAtSize:CGSizeMake(300, 300)];
+        artworkView.contentMode = UIViewContentModeScaleAspectFill;
         [artworkView setImage:[blurFilter imageByFilteringImage:artworkImage]];
+        
         
         /* Fade animation */
         CATransition *transition = [CATransition animation];
@@ -129,10 +159,15 @@
          * which finds the artwork from last.fm API
          */
         NSError* error;
-        NSString* urlStr = [NSString stringWithFormat:@"http://nightbla.de:8431/?artwork=%@+%@",[artistString stringByReplacingOccurrencesOfString:@" " withString:@"+"], [titleString stringByReplacingOccurrencesOfString:@" " withString:@"+"]];
+        NSString* urlStr = format(@"http://hgeg.io/lastrk/?artwork=%@",
+          [self urlencode:
+           [NSString stringWithFormat:@"%@ %@",artistString, titleString]
+          ]
+        );
+        NSLog(@"req: %@",urlStr);
         NSURL* URL = [NSURL URLWithString:urlStr];
         NSString *imageURL = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&error];
-        //NSLog(@"%@",imageURL);
+        NSLog(@"res: %@",imageURL);
         /* If fetching fails SDWebImage ensures that our placeholder is used */
         [artworkView setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"placeholder.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             /* Fade animation */
@@ -173,5 +208,163 @@
         }
     }];
 }
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    longTouch = false;
+    lastTouch = [((UITouch *)[touches allObjects][0]) locationInView:self.view];
+    touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(showMenu) userInfo:nil repeats:NO];
+}
+
+- (void) showMenu {
+    longTouch = true;
+    menu.center = lastTouch;
+    [UIView animateWithDuration:0.2 animations:^{
+        overlay.alpha = 1;
+    }];
+    UIView *volup   = [menu viewWithTag:1],
+    *next    = [menu viewWithTag:2],
+    *voldown = [menu viewWithTag:3],
+    *prev    = [menu viewWithTag:4];
+    CGPoint center = point(120,120);
+    volup.center   = center;
+    next.center    = center;
+    voldown.center = center;
+    prev.center    = center;
+    [UIView animateWithDuration:0.4 animations:^{
+        volup.center   = up;
+        next.center    = right;
+        voldown.center = down;
+        prev.center    = left;
+    }];
+}
+
+- (void) incVolume: (NSTimer *)timer {
+    if (player.volume>=1) [timer invalidate];
+    player.volume += 0.05;
+}
+
+- (void) decVolume: (NSTimer *)timer  {
+    if (player.volume<=0) [timer invalidate];
+    player.volume -= 0.05;
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    CGPoint p = [((UITouch *)[touches allObjects][0]) locationInView:self.view];
+    UIButton *volup   = (UIButton *)[menu viewWithTag:1],
+             *next    = (UIButton *)[menu viewWithTag:2],
+             *voldown = (UIButton *)[menu viewWithTag:3],
+             *prev    = (UIButton *)[menu viewWithTag:4];
+    
+    float dist = (p.x-lastTouch.x)*(p.x-lastTouch.x)+(p.y-lastTouch.y)*(p.y-lastTouch.y);
+    if(dist<520000 && dist>4000) {
+        float angle = r2d(-atan2f((p.y-lastTouch.y), (p.x-lastTouch.x)));
+        if((angle<20.0 && angle>-20.0) && !gr) {
+            gu = false;
+            gr = true;
+            gd = false;
+            gl = false;
+            [volup.titleLabel dim];
+            [next.titleLabel glow];
+            [voldown.titleLabel dim];
+            [prev.titleLabel dim];
+            [volumeTimer invalidate];
+        }
+        if((angle<110 && angle>70) && !gu) {
+            gu = true;
+            gr = false;
+            gd = false;
+            gl = false;
+            [volup.titleLabel glow];
+            [next.titleLabel dim];
+            [voldown.titleLabel dim];
+            [prev.titleLabel dim];
+            volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(incVolume:) userInfo:nil repeats:YES];
+        }
+        if((angle<-160 || angle>160) && !gl) {
+            gu = false;
+            gr = false;
+            gd = false;
+            gl = true;
+            [volup.titleLabel dim];
+            [next.titleLabel dim];
+            [voldown.titleLabel dim];
+            [prev.titleLabel glow];
+            [volumeTimer invalidate];
+        }
+        if((angle<-70 && angle>-110) && !gd) {
+            gu = false;
+            gr = false;
+            gd = true;
+            gl = false;
+            [volup.titleLabel dim];
+            [next.titleLabel dim];
+            [voldown.titleLabel glow];
+            [prev.titleLabel dim];
+            volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(decVolume:) userInfo:nil repeats:YES];
+        }
+    }else {
+        [volup.titleLabel dim];
+        [next.titleLabel dim];
+        [voldown.titleLabel dim];
+        [prev.titleLabel dim];
+        [volumeTimer invalidate];
+        gu = false;
+        gr = false;
+        gd = false;
+        gl = false;
+    }
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if(!longTouch){
+        [self playPause:nil];
+        [touchTimer invalidate];
+    }
+    if (gr) {
+        [self nextSong:nil];
+    }else if(gl){
+        [self prevSong:nil];
+    }
+    [UIView animateWithDuration:0.2 animations:^{
+        overlay.alpha=0;
+    }];
+    UIButton *volup   = (UIButton *)[menu viewWithTag:1],
+             *next    = (UIButton *)[menu viewWithTag:2],
+             *voldown = (UIButton *)[menu viewWithTag:3],
+             *prev    = (UIButton *)[menu viewWithTag:4];
+    
+    [volup.titleLabel dim];
+    [next.titleLabel dim];
+    [voldown.titleLabel dim];
+    [prev.titleLabel dim];
+    
+    gu = false;
+    gr = false;
+    gd = false;
+    gl = false;
+    
+    [volumeTimer invalidate];
+    
+    CGPoint center = point(120,120);
+    [UIView animateWithDuration:0.3 animations:^{
+        volup.center   = center;
+        next.center    = center;
+        voldown.center = center;
+        prev.center    = center;
+    }];
+}
+
+- (NSString *)urlencode:(NSString *)str {
+    NSString *urlString = [[str componentsSeparatedByCharactersInSet:
+                            [NSCharacterSet decimalDigitCharacterSet]]
+                           componentsJoinedByString:@""];
+    CFStringRef newString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)urlString, NULL, CFSTR("!*'();:@&=+@,/?#[]"), kCFStringEncodingUTF8);
+    return (NSString *)CFBridgingRelease(newString);
+}
+
 
 @end

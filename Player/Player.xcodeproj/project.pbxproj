@@ -203,6 +203,8 @@
 		363FEF2C17C512E500C21EA3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 363FEF2B17C512E500C21EA3 /* Default@2x.png */; };
 		363FEF2E17C512E700C21EA3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 363FEF2D17C512E700C21EA3 /* Default-568h@2x.png */; };
 		363FEF3017C5193800C21EA3 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 363FEF2F17C5193800C21EA3 /* placeholder.png */; };
+		D4A7AFD41853C691007B1874 /* glow.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A7AFD31853C691007B1874 /* glow.png */; };
+		D4A7AFDD1853D212007B1874 /* UILabel+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A7AFDC1853D212007B1874 /* UILabel+Glow.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -578,6 +580,9 @@
 		363FEF2B17C512E500C21EA3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		363FEF2D17C512E700C21EA3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		363FEF2F17C5193800C21EA3 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
+		D4A7AFD31853C691007B1874 /* glow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = glow.png; path = ../../../Downloads/glow.png; sourceTree = "<group>"; };
+		D4A7AFDB1853D212007B1874 /* UILabel+Glow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+Glow.h"; sourceTree = "<group>"; };
+		D4A7AFDC1853D212007B1874 /* UILabel+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+Glow.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -649,6 +654,7 @@
 		363FECE117C4D5B000C21EA3 /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				D4A7AFDA1853D1EB007B1874 /* UILabel+Glow */,
 				363FEEF217C4FB9600C21EA3 /* SDWebImage */,
 				363FED0017C4DDA600C21EA3 /* GPUImage */,
 				363FECEA17C4D5B000C21EA3 /* PLAppDelegate.h */,
@@ -1038,12 +1044,22 @@
 		363FEF1217C5034300C21EA3 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				D4A7AFD31853C691007B1874 /* glow.png */,
 				363FEF2117C50F8C00C21EA3 /* pause.png */,
 				363FEF2F17C5193800C21EA3 /* placeholder.png */,
 				363FEF1317C5035B00C21EA3 /* play.png */,
 				363FEF1417C5035B00C21EA3 /* next.png */,
 			);
 			name = Assets;
+			sourceTree = "<group>";
+		};
+		D4A7AFDA1853D1EB007B1874 /* UILabel+Glow */ = {
+			isa = PBXGroup;
+			children = (
+				D4A7AFDB1853D212007B1874 /* UILabel+Glow.h */,
+				D4A7AFDC1853D212007B1874 /* UILabel+Glow.m */,
+			);
+			name = "UILabel+Glow";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1075,6 +1091,11 @@
 				CLASSPREFIX = PL;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Can Bülbül";
+				TargetAttributes = {
+					363FECD717C4D5B000C21EA3 = {
+						DevelopmentTeam = HHZ643A77V;
+					};
+				};
 			};
 			buildConfigurationList = 363FECD317C4D5B000C21EA3 /* Build configuration list for PBXProject "Player" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1098,6 +1119,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4A7AFD41853C691007B1874 /* glow.png in Resources */,
 				363FECE617C4D5B000C21EA3 /* InfoPlist.strings in Resources */,
 				363FECF517C4D5B100C21EA3 /* MainStoryboard.storyboard in Resources */,
 				363FEEEB17C4ED3400C21EA3 /* logo_57.png in Resources */,
@@ -1240,6 +1262,7 @@
 				363FEEB117C4DDA700C21EA3 /* GPUImageScreenBlendFilter.m in Sources */,
 				363FEEB217C4DDA700C21EA3 /* GPUImageSepiaFilter.m in Sources */,
 				363FEEB317C4DDA700C21EA3 /* GPUImageSharpenFilter.m in Sources */,
+				D4A7AFDD1853D212007B1874 /* UILabel+Glow.m in Sources */,
 				363FEEB417C4DDA700C21EA3 /* GPUImageShiTomasiFeatureDetectionFilter.m in Sources */,
 				363FEEB517C4DDA700C21EA3 /* GPUImageSingleComponentFastBlurFilter.m in Sources */,
 				363FEEB617C4DDA700C21EA3 /* GPUImageSingleComponentGaussianBlurFilter.m in Sources */,
@@ -1376,13 +1399,14 @@
 		363FECFC17C4D5B100C21EA3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ali Can Bulbul (3KP7B3JNZE)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Player/Player-Prefix.pch";
 				INFOPLIST_FILE = "Player/Player-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "E7B83CA4-4EF8-4502-B44D-CEE5A638904B";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1390,13 +1414,14 @@
 		363FECFD17C4D5B100C21EA3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer: Ali Can Bulbul (3KP7B3JNZE)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Player/Player-Prefix.pch";
 				INFOPLIST_FILE = "Player/Player-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "E7B83CA4-4EF8-4502-B44D-CEE5A638904B";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1420,6 +1445,7 @@
 				363FECFD17C4D5B100C21EA3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
