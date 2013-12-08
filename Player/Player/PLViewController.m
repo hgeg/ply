@@ -16,7 +16,6 @@
 #define stateChange MPMusicPlayerControllerPlaybackStateDidChangeNotification
 #define normal UIControlStateNormal
 #define blur 1.1
-#define height self.view.frame.size.height
 
 #define up    point(120,24)
 #define right point(216,120)
@@ -28,6 +27,7 @@
 @end
 
 @implementation PLViewController
+@synthesize statusImage;
 @synthesize overlay;
 @synthesize menu;
 @synthesize artworkView;
@@ -36,6 +36,16 @@
 
 #pragma mark -
 #pragma mark View Controller Methods
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    if(toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+        width = self.view.frame.size.height;
+        height = self.view.frame.size.width;
+    }else {
+        width = self.view.frame.size.width;
+        height = self.view.frame.size.height;
+    }
+}
 
 - (void) viewDidLoad {
     [super viewDidLoad];
@@ -92,10 +102,27 @@
     /* Play/Pause button method is only for controlling music player
      * In-app events are in callback function below 
      */
-    if ([player playbackState] == MPMusicPlaybackStatePlaying) 
+    if ([player playbackState] == MPMusicPlaybackStatePlaying){
+        statusImage.image = [UIImage imageNamed:@"pause.png"];
+        [UIView animateWithDuration:0.1 animations:^{
+            statusImage.alpha = 0.6;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.4 animations:^{
+                statusImage.alpha = 0;
+            }];
+        }];
         [player pause];
-    else
+    }else{
+        statusImage.image = [UIImage imageNamed:@"play.png"];
+        [UIView animateWithDuration:0.1 animations:^{
+            statusImage.alpha = 0.6;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.4 animations:^{
+                statusImage.alpha = 0;
+            }];
+        }];
         [player play];
+    }
 }
 
 - (IBAction) nextSong:(id)sender {
@@ -113,7 +140,6 @@
      * change the button image and reset the indicator counter.
      */
     if ([player playbackState] == MPMusicPlaybackStatePlaying) {
-        
         playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(updateIndicator) userInfo:nil repeats:YES];
     } else {
         [playbackTimer invalidate];
@@ -201,7 +227,7 @@
     /* update function for indicator at the bottom */
     [UIView animateWithDuration:0.5 animations:^{
         @try {
-            playbackIndicator.frame = CGRectMake(0,318,[player currentPlaybackTime]*1.0*height/npDuration,2);
+            playbackIndicator.frame = CGRectMake(0,height-2,[player currentPlaybackTime]*1.0*width/npDuration,2);
         }
         @catch (NSException *exception) {
             playbackIndicator.frame = CGRectMake(0,318,0,2);
@@ -249,6 +275,7 @@
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    if(!longTouch) return;
     CGPoint p = [((UITouch *)[touches allObjects][0]) locationInView:self.view];
     UIButton *volup   = (UIButton *)[menu viewWithTag:1],
              *next    = (UIButton *)[menu viewWithTag:2],

@@ -22,8 +22,10 @@
     NSTimer *volumeTimer;
     BOOL longTouch;
     BOOL gu,gr,gd,gl;
+    int height,width;
 }
 
+@property (weak, nonatomic) IBOutlet UIImageView *statusImage;
 @property (weak, nonatomic) IBOutlet UIImageView *artworkView;
 @property (weak, nonatomic) IBOutlet UIView *playbackIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *infoLabel;

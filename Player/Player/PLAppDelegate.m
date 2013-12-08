@@ -17,7 +17,6 @@
     
     [UIApplication sharedApplication].idleTimerDisabled = true;
     [MPMusicPlayerController iPodMusicPlayer].shuffleMode = MPMusicShuffleModeSongs;
-    [MPMusicPlayerController iPodMusicPlayer].volume = 1;
     return YES;
 }
 							
