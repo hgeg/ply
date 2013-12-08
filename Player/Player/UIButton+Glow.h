@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UILabel (Glow)
+@interface UIButton (Glow)
 
 - (void) glow;
 - (void) dim;

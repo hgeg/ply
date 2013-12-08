@@ -6,18 +6,19 @@
 //  Copyright (c) 2013 Can Bülbül. All rights reserved.
 //
 
-#import "UILabel+Glow.h"
+#import "UIButton+Glow.h"
 
-@implementation UILabel (Glow)
+@implementation UIButton (Glow)
 
 - (void) glow {
     self.layer.masksToBounds = NO;
     self.layer.shadowColor = [UIColor whiteColor].CGColor;
     self.layer.shadowOffset = CGSizeMake(0.0, 0.0);
-    self.layer.shadowRadius = 20;
+    self.layer.shadowRadius = 25;
     self.layer.shadowOpacity = 1.0;
+    CGRect b = self.bounds;
     [self.layer setShadowPath:[[UIBezierPath
-                                bezierPathWithRect:self.bounds] CGPath]];
+                                bezierPathWithRect:rect(b.origin.x-25, b.origin.y-25, b.size.width+50,b.size.height+50)] CGPath]];
     
 }
 

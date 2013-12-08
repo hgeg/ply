@@ -14,7 +14,7 @@
 {
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-    
+    [[MPMusicPlayerController iPodMusicPlayer] pause];
     [UIApplication sharedApplication].idleTimerDisabled = true;
     [MPMusicPlayerController iPodMusicPlayer].shuffleMode = MPMusicShuffleModeSongs;
     return YES;

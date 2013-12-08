@@ -9,7 +9,7 @@
 #import "GPUImage.h"
 #import "PLViewController.h"
 #import "SDWebImage/UIImageView+WebCache.h"
-#import "UILabel+Glow.h"
+#import "UIButton+Glow.h"
 #import <math.h>
 
 #define itemChange MPMusicPlayerControllerNowPlayingItemDidChangeNotification
@@ -31,11 +31,20 @@
 @synthesize overlay;
 @synthesize menu;
 @synthesize artworkView;
-@synthesize infoLabel;
+@synthesize artistLabel;
+@synthesize songLabel;
+@synthesize volumeIndicator;
 @synthesize playbackIndicator;
+@synthesize timeIndicator;
+@synthesize currentLabel;
+@synthesize totaltime;
 
 #pragma mark -
 #pragma mark View Controller Methods
+
+-(BOOL) shouldAutorotate {
+    return !touched;
+}
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     if(toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
@@ -45,10 +54,14 @@
         width = self.view.frame.size.width;
         height = self.view.frame.size.height;
     }
+    [self updateIndicator];
 }
 
 - (void) viewDidLoad {
     [super viewDidLoad];
+    
+    width = self.view.frame.size.width;
+    height = self.view.frame.size.height;
     
     /* add dummy volume indicator */
     MPVolumeView *volumeView = [[MPVolumeView alloc] initWithFrame: rect(-1000, -1000, 0, 0)];
@@ -66,7 +79,6 @@
         [player setNowPlayingItem:randomTrack];
         [player beginGeneratingPlaybackNotifications];
     }
-     
     
     /* Subscribe to music player notifications */
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -79,10 +91,14 @@
     /* Hide the overlay view*/
     overlay.alpha = 0;
     
+    /* reset the flags */
     gu = false;
     gr = false;
     gd = false;
     gl = false;
+    touched = false;
+    seeking = false;
+    longTouch = false;
     
 }
 
@@ -127,19 +143,32 @@
 
 - (IBAction) nextSong:(id)sender {
     /* Just go to next song */
+    [player endSeeking];
     [player skipToNextItem];
 }
 
 - (IBAction) prevSong:(id)sender {
     /* Just go to next song */
+    [player endSeeking];
     [player skipToPreviousItem];
 }
+
+- (void) seekForward: (NSTimer *)timer {
+    seeking = true;
+    [player beginSeekingForward];
+}
+
+- (void) seekBackwards: (NSTimer *)timer  {
+    seeking = true;
+    [player beginSeekingBackward];
+}
+
 
 - (void) stateChangeCallback{
     /* Play/Pause callback
      * change the button image and reset the indicator counter.
      */
-    if ([player playbackState] == MPMusicPlaybackStatePlaying) {
+    if ([player playbackState] == MPMusicPlaybackStatePlaying || [player playbackState] == MPMusicPlaybackStateSeekingForward || [player playbackState] == MPMusicPlaybackStateSeekingBackward) {
         playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(updateIndicator) userInfo:nil repeats:YES];
     } else {
         [playbackTimer invalidate];
@@ -152,11 +181,12 @@
      */
     nowPlaying = [player nowPlayingItem];
     npDuration = [[nowPlaying valueForProperty:MPMediaItemPropertyPlaybackDuration] integerValue];
-    NSString *titleString = [nowPlaying valueForProperty:MPMediaItemPropertyTitle];
-    NSString *artistString = [nowPlaying valueForProperty:MPMediaItemPropertyArtist];
+    NSString *titleString = [[nowPlaying valueForProperty:MPMediaItemPropertyTitle] uppercaseString];
+    NSString *artistString = [[nowPlaying valueForProperty:MPMediaItemPropertyArtist] uppercaseString];
     if (!artistString) {
         artistString = @"";
     }
+    totaltime.text = format(@"%.2d:%.2d",(int)(npDuration/60),((int)npDuration%60));
     
     // Fetch the artwork from library
     UIImage *artworkImage = nil;
@@ -170,7 +200,7 @@
         [blurFilter forceProcessingAtSize:CGSizeMake(300, 300)];
         artworkView.contentMode = UIViewContentModeScaleAspectFill;
         [artworkView setImage:[blurFilter imageByFilteringImage:artworkImage]];
-        
+        artworkView.tintColor = rgba(35,149,155,128);
         
         /* Fade animation */
         CATransition *transition = [CATransition animation];
@@ -206,18 +236,29 @@
     }
     //Change artist name to Unknown Artist if not shown
     if ([artistString isEqualToString:@""]) {
-        artistString = @"Unknown Artist";
+        artistString = @"UNKNOWN ARTIST";
     }
+    
+    currentLabel.text = @"00:00";
     
     /* Fade animation for label update */
     [UIView animateWithDuration:0.2 animations:^{
-        infoLabel.alpha = 0.3;
+        artistLabel.alpha = 0.3;
+        songLabel.alpha   = 0.3;
+        totaltime.alpha   = 0.3;
     } completion:^(BOOL finished) {
-        infoLabel.text = [NSString stringWithFormat:@"%@ - %@",artistString, titleString];
+        artistLabel.text = artistString;
+        songLabel.text   = titleString;
         [UIView animateWithDuration:0.2 animations:^{
-            infoLabel.alpha = 1;
+            artistLabel.alpha = 1;
+            songLabel.alpha   = 1;
+            totaltime.alpha   = 1;
         }];
     }];
+    
+    
+    [player play];
+    
     /* Reset the indicator */
     [self updateIndicator];
         
@@ -225,20 +266,36 @@
 
 - (void) updateIndicator {
     /* update function for indicator at the bottom */
-    [UIView animateWithDuration:0.5 animations:^{
+    float d = 0.5;
+    if([player playbackState] == MPMusicPlaybackStatePlaying) {
+        d = 0.5;
+    }else d = 1;
+    [UIView animateWithDuration:d animations:^{
         @try {
-            playbackIndicator.frame = CGRectMake(0,height-2,[player currentPlaybackTime]*1.0*width/npDuration,2);
+            playbackIndicator.frame = rect(0,height-8,[player currentPlaybackTime]*1.0*width/npDuration,8);
+            currentLabel.text = format(@"%.2d:%.2d",(int)([player currentPlaybackTime]/60),((int)[player currentPlaybackTime]%60));
+            
+            if(playbackIndicator.frame.size.width<32)
+                timeIndicator.center = point(32, height-40);
+            else if(playbackIndicator.frame.size.width>width-32)
+                timeIndicator.center = point(width-32, height-40);
+            else
+                timeIndicator.center = point(playbackIndicator.frame.size.width, height-40);
         }
         @catch (NSException *exception) {
-            playbackIndicator.frame = CGRectMake(0,318,0,2);
+            playbackIndicator.frame = rect(0,318,0,2);
         }
     }];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    longTouch = false;
-    lastTouch = [((UITouch *)[touches allObjects][0]) locationInView:self.view];
-    touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(showMenu) userInfo:nil repeats:NO];
+    if (!touched) {
+        volumeIndicator.text = format(@"%d",(int)(player.volume*100));
+        longTouch = false;
+        touched = true;
+        lastTouch = [((UITouch *)[[touches allObjects] lastObject]) locationInView:self.view];
+        touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(showMenu) userInfo:nil repeats:NO];
+    }
 }
 
 - (void) showMenu {
@@ -266,12 +323,14 @@
 
 - (void) incVolume: (NSTimer *)timer {
     if (player.volume>=1) [timer invalidate];
-    player.volume += 0.05;
+    player.volume += 0.01;
+    volumeIndicator.text = format(@"%d",(int)(player.volume*100));
 }
 
 - (void) decVolume: (NSTimer *)timer  {
     if (player.volume<=0) [timer invalidate];
-    player.volume -= 0.05;
+    player.volume -= 0.01;
+    volumeIndicator.text = format(@"%d",(int)(player.volume*100));
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -290,55 +349,60 @@
             gr = true;
             gd = false;
             gl = false;
-            [volup.titleLabel dim];
-            [next.titleLabel glow];
-            [voldown.titleLabel dim];
-            [prev.titleLabel dim];
+            [volup dim];
+            [next glow];
+            [voldown dim];
+            [prev dim];
             [volumeTimer invalidate];
+            seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(seekForward:) userInfo:nil repeats:NO];
         }
         if((angle<110 && angle>70) && !gu) {
             gu = true;
             gr = false;
             gd = false;
             gl = false;
-            [volup.titleLabel glow];
-            [next.titleLabel dim];
-            [voldown.titleLabel dim];
-            [prev.titleLabel dim];
-            volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(incVolume:) userInfo:nil repeats:YES];
+            [volup glow];
+            [next dim];
+            [voldown dim];
+            [prev dim];
+            if(!seeking)
+                volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(incVolume:) userInfo:nil repeats:YES];
         }
         if((angle<-160 || angle>160) && !gl) {
             gu = false;
             gr = false;
             gd = false;
             gl = true;
-            [volup.titleLabel dim];
-            [next.titleLabel dim];
-            [voldown.titleLabel dim];
-            [prev.titleLabel glow];
+            [volup dim];
+            [next dim];
+            [voldown dim];
+            [prev glow];
             [volumeTimer invalidate];
+            seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(seekBackwards:) userInfo:nil repeats:NO];
         }
         if((angle<-70 && angle>-110) && !gd) {
             gu = false;
             gr = false;
             gd = true;
             gl = false;
-            [volup.titleLabel dim];
-            [next.titleLabel dim];
-            [voldown.titleLabel glow];
-            [prev.titleLabel dim];
-            volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(decVolume:) userInfo:nil repeats:YES];
+            [volup dim];
+            [next dim];
+            [voldown glow];
+            [prev dim];
+            volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(decVolume:) userInfo:nil repeats:YES];
         }
     }else {
-        [volup.titleLabel dim];
-        [next.titleLabel dim];
-        [voldown.titleLabel dim];
-        [prev.titleLabel dim];
+        [volup dim];
+        [next dim];
+        [voldown dim];
+        [prev dim];
         [volumeTimer invalidate];
         gu = false;
         gr = false;
         gd = false;
         gl = false;
+        seeking = false;
+        [player endSeeking];
     }
 }
 
@@ -348,12 +412,17 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
     if(!longTouch){
-        [self playPause:nil];
+        CGPoint p = [((UITouch *)[touches allObjects][0]) locationInView:self.view];
+        float dist = (p.x-lastTouch.x)*(p.x-lastTouch.x)+(p.y-lastTouch.y)*(p.y-lastTouch.y);
+        if (dist<1024) {
+            [self playPause:nil];
+        }
         [touchTimer invalidate];
     }
-    if (gr) {
+    [player endSeeking];
+    if (gr && !seeking) {
         [self nextSong:nil];
-    }else if(gl){
+    }else if(gl && !seeking){
         [self prevSong:nil];
     }
     [UIView animateWithDuration:0.2 animations:^{
@@ -364,17 +433,21 @@
              *voldown = (UIButton *)[menu viewWithTag:3],
              *prev    = (UIButton *)[menu viewWithTag:4];
     
-    [volup.titleLabel dim];
-    [next.titleLabel dim];
-    [voldown.titleLabel dim];
-    [prev.titleLabel dim];
+    [volup dim];
+    [next dim];
+    [voldown dim];
+    [prev dim];
     
     gu = false;
     gr = false;
     gd = false;
     gl = false;
+    touched = false;
+    seeking = false;
+    longTouch = false;
     
     [volumeTimer invalidate];
+    [seekTimer invalidate];
     
     CGPoint center = point(120,120);
     [UIView animateWithDuration:0.3 animations:^{
@@ -383,6 +456,8 @@
         voldown.center = center;
         prev.center    = center;
     }];
+    
+    [player endSeeking];
 }
 
 - (NSString *)urlencode:(NSString *)str {

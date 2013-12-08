@@ -20,7 +20,8 @@
     CGPoint lastTouch;
     NSTimer *touchTimer;
     NSTimer *volumeTimer;
-    BOOL longTouch;
+    NSTimer *seekTimer;
+    BOOL longTouch, seeking,touched;
     BOOL gu,gr,gd,gl;
     int height,width;
 }
@@ -28,9 +29,14 @@
 @property (weak, nonatomic) IBOutlet UIImageView *statusImage;
 @property (weak, nonatomic) IBOutlet UIImageView *artworkView;
 @property (weak, nonatomic) IBOutlet UIView *playbackIndicator;
-@property (weak, nonatomic) IBOutlet UILabel *infoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *artistLabel;
+@property (weak, nonatomic) IBOutlet UILabel *songLabel;
 @property (weak, nonatomic) IBOutlet UIView *overlay;
 @property (weak, nonatomic) IBOutlet UIView *menu;
+@property (weak, nonatomic) IBOutlet UILabel *volumeIndicator;
+@property (weak, nonatomic) IBOutlet UIView *timeIndicator;
+@property (weak, nonatomic) IBOutlet UILabel *currentLabel;
+@property (weak, nonatomic) IBOutlet UILabel *totaltime;
 
 - (IBAction) playPause:(id)sender;
 - (IBAction) nextSong:(id)sender;
