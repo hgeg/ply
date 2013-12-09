@@ -34,10 +34,10 @@
 //User defaults manipulation
 #define UD_setObj(key,obj) [[NSUserDefaults standardUserDefaults] setObject:obj forKey:key]
 #define UD_getObj(key)     [[NSUserDefaults standardUserDefaults] objectForKey:key]
-#define UD_setBool(key,d)  [[NSUserDefaults standardUserDefaults] setBoolean:d forKey:key]
-#define UD_getBool(key)    [[NSUserDefaults standardUserDefaults] booleanForKey:key]
+#define UD_setBool(key,d)  [[NSUserDefaults standardUserDefaults] setBool:d forKey:key]
+#define UD_getBool(key)    [[NSUserDefaults standardUserDefaults] boolForKey:key]
 #define UD_setInt(key,d)   [[NSUserDefaults standardUserDefaults] setInteger:d forKey:key]
-#define UD_getInt(key)     [[NSUserDefaults standardUserDefaults] integerForKey:key]ü
+#define UD_getInt(key)     [[NSUserDefaults standardUserDefaults] integerForKey:key]
 
 //Notification Center management
 

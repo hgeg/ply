@@ -6,10 +6,10 @@
 //  Copyright (c) 2013 Can Bülbül. All rights reserved.
 //
 
-#import "GPUImage.h"
 #import "PLViewController.h"
 #import "SDWebImage/UIImageView+WebCache.h"
 #import "UIButton+Glow.h"
+#import "PLVisualizerView.h"
 #import <math.h>
 
 #define itemChange MPMusicPlayerControllerNowPlayingItemDidChangeNotification
@@ -32,18 +32,19 @@
 @synthesize menu;
 @synthesize artworkView;
 @synthesize artistLabel;
-@synthesize songLabel;
+@synthesize songTitle;
 @synthesize volumeIndicator;
 @synthesize playbackIndicator;
 @synthesize timeIndicator;
 @synthesize currentLabel;
 @synthesize totaltime;
+@synthesize timeView;
 
 #pragma mark -
 #pragma mark View Controller Methods
 
 -(BOOL) shouldAutorotate {
-    return !touched;
+    return !touched && UD_getBool(@"tutorial");
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -54,14 +55,44 @@
         width = self.view.frame.size.width;
         height = self.view.frame.size.height;
     }
+    [self itemChangeCallback];
     [self updateIndicator];
 }
 
 - (void) viewDidLoad {
     [super viewDidLoad];
     
+    int opens = UD_getInt(@"opens") ? UD_getInt(@"opens") : 0;
+    bool rated = UD_getBool(@"rated") ? UD_getBool(@"rated") : false;
+    opens++;
+    UD_setInt(@"opens", opens);
+    UD_setBool(@"rated", rated);
+    
+    UIAlertView *alert;
+    if (opens%10==0 && !rated) {
+        alert = [[UIAlertView alloc] initWithTitle:@"Rate PLY" message:@"Enjoying PLY? Please rate this app on AppStore." delegate:self cancelButtonTitle:@"Don't bother me with this" otherButtonTitles:@"Rate now", @"Maybe later", nil];
+        [alert show];
+    }
+    
     width = self.view.frame.size.width;
     height = self.view.frame.size.height;
+    
+    if (!UD_getBool(@"tutorial")) {
+        UIImageView *tutorial = [[UIImageView alloc] initWithFrame:rect(0, 0, 320, 568)];
+        tutorial.image = [UIImage imageNamed:@"tutorial.png"];
+        tutorial.userInteractionEnabled = YES;
+        UITapGestureRecognizer *tgw = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeTutorial:)];
+        [tutorial addGestureRecognizer:tgw];
+        tutorial.alpha = 1;
+        [self.view addSubview:tutorial];
+        [self.view bringSubviewToFront:tutorial];
+    }
+    
+    launcher = [[UIImageView alloc] initWithFrame:rect(0, 0, 320, 568)];
+    launcher.image = [UIImage imageNamed:@"s_l_i5.png"];
+    launcher.center = point(160, height/2);
+    launcher.alpha = 1;
+    [self.view addSubview:launcher];
     
     /* add dummy volume indicator */
     MPVolumeView *volumeView = [[MPVolumeView alloc] initWithFrame: rect(-1000, -1000, 0, 0)];
@@ -78,15 +109,37 @@
         [player setQueueWithItemCollection:[MPMediaItemCollection collectionWithItems:songs]];
         [player setNowPlayingItem:randomTrack];
         [player beginGeneratingPlaybackNotifications];
+    } else {
+        artworkView.alpha = 0;
+        artistLabel.alpha = 0;
+        timeView.alpha = 0;
+        
+        [songTitle setText:@"It seems you don't have any music in your library. Add some songs via itunes to use PLY."];
+        [songTitle setTextColor:rgba(255, 255, 255, 200)];
+        [songTitle setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:20]];
+        songTitle.clipsToBounds = NO;
+        [songTitle setTextAlignment:NSTextAlignmentCenter];
+        songTitle.alpha = 1;
     }
-    
     /* Subscribe to music player notifications */
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(itemChangeCallback) name:itemChange object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(stateChangeCallback) name:stateChange object:nil];
     
+    /* Initialize Visualizer */
+    self.visualizer = [[PLVisualizerView alloc] initWithFrame:self.view.frame];
+    /*[_visualizer setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];*/
+    [self.backgroundView addSubview:_visualizer];
+    
+    artworkView.layer.masksToBounds = YES;
+    artworkView.layer.cornerRadius  = 50.0f;
+    artworkView.layer.borderWidth   = 2.0f;
+    artworkView.layer.borderColor   = [rgba(210, 250, 255, 200) CGColor];
+    
+    
     /* Pause the player just in case */
     [player pause];
+    //[self.visualizer stop];
     
     /* Hide the overlay view*/
     overlay.alpha = 0;
@@ -99,16 +152,44 @@
     touched = false;
     seeking = false;
     longTouch = false;
-    
 }
 
-- (void)didReceiveMemoryWarning {
+- (void) didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     [[NSNotificationCenter defaultCenter] removeObserver: self name:itemChange object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(stateChangeCallback) name:stateChange object:nil];
     [playbackTimer invalidate];
     playbackTimer = nil;
     player = nil;
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSString *stringURL = @"http://orkestra.co/PLY/";
+    NSURL *url = [NSURL URLWithString:stringURL];
+    switch (buttonIndex) {
+        case 1:
+            [[UIApplication sharedApplication] openURL:url];
+            UD_setBool(@"rated", true);
+            break;
+        case 0:
+            UD_setBool(@"rated", true);
+            break;
+        default:
+            break;
+    }
+}
+
+- (void) removeTutorial:(UITapGestureRecognizer *)recognizer {
+    [UIView animateWithDuration:0.3 animations:^{
+        recognizer.view.alpha = 0;
+    } completion:^(BOOL finished) {
+        [recognizer.view removeFromSuperview];
+        MPMediaQuery* query = [MPMediaQuery songsQuery];
+        songs = [query items]; //Select from all songs in the library
+        if([songs count]>0) {
+            UD_setBool(@"tutorial", true);
+        }
+    }];
 }
 
 #pragma mark -
@@ -170,8 +251,10 @@
      */
     if ([player playbackState] == MPMusicPlaybackStatePlaying || [player playbackState] == MPMusicPlaybackStateSeekingForward || [player playbackState] == MPMusicPlaybackStateSeekingBackward) {
         playbackTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(updateIndicator) userInfo:nil repeats:YES];
+        [self.visualizer start];
     } else {
         [playbackTimer invalidate];
+        [self.visualizer stop];
     }
 }
 
@@ -194,13 +277,7 @@
     artworkImage = [artwork imageWithSize: CGSizeMake (300, 300)];
         
     if (artworkImage) {
-        /* If found, apply blur filter and insert */
-        blurFilter = [[GPUImageGaussianBlurFilter alloc] init];
-        blurFilter.blurSize = blur;
-        [blurFilter forceProcessingAtSize:CGSizeMake(300, 300)];
-        artworkView.contentMode = UIViewContentModeScaleAspectFill;
-        [artworkView setImage:[blurFilter imageByFilteringImage:artworkImage]];
-        artworkView.tintColor = rgba(35,149,155,128);
+        [artworkView setImage:artworkImage];
         
         /* Fade animation */
         CATransition *transition = [CATransition animation];
@@ -220,12 +297,10 @@
            [NSString stringWithFormat:@"%@ %@",artistString, titleString]
           ]
         );
-        NSLog(@"req: %@",urlStr);
         NSURL* URL = [NSURL URLWithString:urlStr];
         NSString *imageURL = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&error];
-        NSLog(@"res: %@",imageURL);
         /* If fetching fails SDWebImage ensures that our placeholder is used */
-        [artworkView setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"placeholder.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        [artworkView setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"default.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
             /* Fade animation */
             CATransition *transition = [CATransition animation];
             transition.duration = 0.2f;
@@ -239,25 +314,37 @@
         artistString = @"UNKNOWN ARTIST";
     }
     
-    currentLabel.text = @"00:00";
-    
     /* Fade animation for label update */
     [UIView animateWithDuration:0.2 animations:^{
+        
         artistLabel.alpha = 0.3;
-        songLabel.alpha   = 0.3;
-        totaltime.alpha   = 0.3;
+        songTitle.alpha   = 0.3;
+        timeView.alpha   = 0.3;
     } completion:^(BOOL finished) {
         artistLabel.text = artistString;
-        songLabel.text   = titleString;
+        [songTitle setText:titleString];
+        [songTitle setTextColor:rgba(255, 255, 255, 200)];
+        [songTitle setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:20]];
+        [songTitle setTextAlignment:NSTextAlignmentCenter];
+        
+        float hoff = songTitle.frame.size.height - [songTitle sizeThatFits:CGSizeMake(songTitle.frame.size.width,songTitle.frame.size.height)].height;
+        timeView.center = point(timeView.center.x, songTitle.frame.origin.y+songTitle.frame.size.height-hoff+16);
+        
+        currentLabel.text = @"00:00";
         [UIView animateWithDuration:0.2 animations:^{
             artistLabel.alpha = 1;
-            songLabel.alpha   = 1;
-            totaltime.alpha   = 1;
+            songTitle.alpha   = 1;
+            timeView.alpha    = 1;
         }];
+        if(launcher.alpha>0)
+            [UIView animateWithDuration:0.3 animations:^{
+                launcher.alpha = 0;
+            } completion:^(BOOL finished) {
+                [launcher removeFromSuperview];
+            }];
     }];
     
-    
-    [player play];
+    //[player play];
     
     /* Reset the indicator */
     [self updateIndicator];
@@ -275,12 +362,15 @@
             playbackIndicator.frame = rect(0,height-8,[player currentPlaybackTime]*1.0*width/npDuration,8);
             currentLabel.text = format(@"%.2d:%.2d",(int)([player currentPlaybackTime]/60),((int)[player currentPlaybackTime]%60));
             
-            if(playbackIndicator.frame.size.width<32)
+            if(playbackIndicator.frame.size.width<32) {
                 timeIndicator.center = point(32, height-40);
-            else if(playbackIndicator.frame.size.width>width-32)
+                timeIndicator.alpha = (playbackIndicator.frame.size.width)/40.0;
+            } else if(playbackIndicator.frame.size.width>width-32) {
                 timeIndicator.center = point(width-32, height-40);
-            else
+                timeIndicator.alpha = (width-playbackIndicator.frame.size.width)/40.0;
+            } else {
                 timeIndicator.center = point(playbackIndicator.frame.size.width, height-40);
+            }
         }
         @catch (NSException *exception) {
             playbackIndicator.frame = rect(0,318,0,2);
@@ -289,7 +379,7 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    if (!touched) {
+    if (!touched && UD_getBool(@"tutorial")) {
         volumeIndicator.text = format(@"%d",(int)(player.volume*100));
         longTouch = false;
         touched = true;
@@ -365,6 +455,8 @@
             [next dim];
             [voldown dim];
             [prev dim];
+            seeking = false;
+            [player endSeeking];
             if(!seeking)
                 volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(incVolume:) userInfo:nil repeats:YES];
         }
@@ -389,6 +481,8 @@
             [next dim];
             [voldown glow];
             [prev dim];
+            seeking = false;
+            [player endSeeking];
             volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(decVolume:) userInfo:nil repeats:YES];
         }
     }else {

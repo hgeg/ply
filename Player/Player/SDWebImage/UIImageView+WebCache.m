@@ -7,7 +7,6 @@
  */
 
 #import "UIImageView+WebCache.h"
-#import "GPUImage.h"
 #import "objc/runtime.h"
 
 #define blur 1.2
@@ -61,10 +60,7 @@ static char operationKey;
             if (!sself) return;
             if (image)
             {
-                GPUImageGaussianBlurFilter *blurFilter =
-                [[GPUImageGaussianBlurFilter alloc] init];
-                blurFilter.blurSize = blur;
-                sself.image = [blurFilter imageByFilteringImage:image];
+                sself.image = image;
                 [sself setNeedsLayout];
             }
             if (completedBlock && finished)

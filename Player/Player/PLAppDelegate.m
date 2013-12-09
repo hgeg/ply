@@ -7,6 +7,7 @@
 //
 
 #import "PLAppDelegate.h"
+#import "ACRequest.h"
 
 @implementation PLAppDelegate
 
@@ -17,6 +18,7 @@
     [[MPMusicPlayerController iPodMusicPlayer] pause];
     [UIApplication sharedApplication].idleTimerDisabled = true;
     [MPMusicPlayerController iPodMusicPlayer].shuffleMode = MPMusicShuffleModeSongs;
+    [[[ACRequest alloc] init] sendAppOpen];
     return YES;
 }
 							
