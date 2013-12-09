@@ -43,11 +43,15 @@
 #pragma mark -
 #pragma mark View Controller Methods
 
+// don't let autorotate if either control menu or
+// tutorial menu is active
 -(BOOL) shouldAutorotate {
     return !touched && UD_getBool(@"tutorial");
 }
 
+
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    // reassign heaght and width according to orientation
     if(toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
         width = self.view.frame.size.height;
         height = self.view.frame.size.width;
@@ -55,6 +59,7 @@
         width = self.view.frame.size.width;
         height = self.view.frame.size.height;
     }
+    // call for itemChangeCallback repositions song elements
     [self itemChangeCallback];
     [self updateIndicator];
 }
@@ -62,6 +67,7 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
     
+    /* Rating alert */
     int opens = UD_getInt(@"opens") ? UD_getInt(@"opens") : 0;
     bool rated = UD_getBool(@"rated") ? UD_getBool(@"rated") : false;
     opens++;
@@ -73,10 +79,13 @@
         alert = [[UIAlertView alloc] initWithTitle:@"Rate PLY" message:@"Enjoying PLY? Please rate this app on AppStore." delegate:self cancelButtonTitle:@"Don't bother me with this" otherButtonTitles:@"Rate now", @"Maybe later", nil];
         [alert show];
     }
+    /* End of raiting alert */
     
+    /* Initialize dimensions */
     width = self.view.frame.size.width;
     height = self.view.frame.size.height;
     
+    /* Show tutorial view at first open */
     if (!UD_getBool(@"tutorial")) {
         UIImageView *tutorial = [[UIImageView alloc] initWithFrame:rect(0, 0, 320, 568)];
         tutorial.image = [UIImage imageNamed:@"tutorial.png"];
@@ -88,6 +97,8 @@
         [self.view bringSubviewToFront:tutorial];
     }
     
+    
+    /* A pseudo LaunchImage that fades out */
     launcher = [[UIImageView alloc] initWithFrame:rect(0, 0, 320, 568)];
     launcher.image = [UIImage imageNamed:@"s_l_i5.png"];
     launcher.center = point(160, height/2);
@@ -104,6 +115,7 @@
 	player = [MPMusicPlayerController iPodMusicPlayer];
     MPMediaQuery* query = [MPMediaQuery songsQuery];
     songs = [query items]; //Select from all songs in the library
+    /* check for applicable music library */
     if([songs count]>0) {
         MPMediaItem *randomTrack = [songs objectAtIndex:arc4random_uniform([songs count])];
         [player setQueueWithItemCollection:[MPMediaItemCollection collectionWithItems:songs]];
@@ -121,6 +133,7 @@
         [songTitle setTextAlignment:NSTextAlignmentCenter];
         songTitle.alpha = 1;
     }
+    
     /* Subscribe to music player notifications */
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(itemChangeCallback) name:itemChange object:nil];
@@ -131,15 +144,15 @@
     /*[_visualizer setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];*/
     [self.backgroundView addSubview:_visualizer];
     
+    /* Circular artwork */
     artworkView.layer.masksToBounds = YES;
     artworkView.layer.cornerRadius  = 50.0f;
     artworkView.layer.borderWidth   = 2.0f;
     artworkView.layer.borderColor   = [rgba(210, 250, 255, 200) CGColor];
     
     
-    /* Pause the player just in case */
-    [player pause];
-    //[self.visualizer stop];
+    /* Start the player */
+    [player play];
     
     /* Hide the overlay view*/
     overlay.alpha = 0;
@@ -151,7 +164,7 @@
     gl = false;
     touched = false;
     seeking = false;
-    longTouch = false;
+    tapTouch = false;
 }
 
 - (void) didReceiveMemoryWarning {
@@ -232,16 +245,6 @@
     /* Just go to next song */
     [player endSeeking];
     [player skipToPreviousItem];
-}
-
-- (void) seekForward: (NSTimer *)timer {
-    seeking = true;
-    [player beginSeekingForward];
-}
-
-- (void) seekBackwards: (NSTimer *)timer  {
-    seeking = true;
-    [player beginSeekingBackward];
 }
 
 
@@ -381,17 +384,18 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     if (!touched && UD_getBool(@"tutorial")) {
         volumeIndicator.text = format(@"%d",(int)(player.volume*100));
-        longTouch = false;
+        tapTouch = true;
         touched = true;
         lastTouch = [((UITouch *)[[touches allObjects] lastObject]) locationInView:self.view];
-        touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.15 target:self selector:@selector(showMenu) userInfo:nil repeats:NO];
+        touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(showMenu) userInfo:nil repeats:NO];
+
     }
 }
 
 - (void) showMenu {
-    longTouch = true;
+    tapTouch = false;
     menu.center = lastTouch;
-    [UIView animateWithDuration:0.2 animations:^{
+    [UIView animateWithDuration:0.1 animations:^{
         overlay.alpha = 1;
     }];
     UIView *volup   = [menu viewWithTag:1],
@@ -403,7 +407,7 @@
     next.center    = center;
     voldown.center = center;
     prev.center    = center;
-    [UIView animateWithDuration:0.4 animations:^{
+    [UIView animateWithDuration:0.1 animations:^{
         volup.center   = up;
         next.center    = right;
         voldown.center = down;
@@ -424,7 +428,6 @@
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if(!longTouch) return;
     CGPoint p = [((UITouch *)[touches allObjects][0]) locationInView:self.view];
     UIButton *volup   = (UIButton *)[menu viewWithTag:1],
              *next    = (UIButton *)[menu viewWithTag:2],
@@ -432,6 +435,11 @@
              *prev    = (UIButton *)[menu viewWithTag:4];
     
     float dist = (p.x-lastTouch.x)*(p.x-lastTouch.x)+(p.y-lastTouch.y)*(p.y-lastTouch.y);
+    if (tapTouch && dist>2000) {
+        [self showMenu];
+        tapTouch = false;
+        [touchTimer invalidate];
+    }
     if(dist<520000 && dist>4000) {
         float angle = r2d(-atan2f((p.y-lastTouch.y), (p.x-lastTouch.x)));
         if((angle<20.0 && angle>-20.0) && !gr) {
@@ -444,7 +452,6 @@
             [voldown dim];
             [prev dim];
             [volumeTimer invalidate];
-            seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(seekForward:) userInfo:nil repeats:NO];
         }
         if((angle<110 && angle>70) && !gu) {
             gu = true;
@@ -456,9 +463,7 @@
             [voldown dim];
             [prev dim];
             seeking = false;
-            [player endSeeking];
-            if(!seeking)
-                volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(incVolume:) userInfo:nil repeats:YES];
+            volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(incVolume:) userInfo:nil repeats:YES];
         }
         if((angle<-160 || angle>160) && !gl) {
             gu = false;
@@ -470,7 +475,6 @@
             [voldown dim];
             [prev glow];
             [volumeTimer invalidate];
-            seekTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(seekBackwards:) userInfo:nil repeats:NO];
         }
         if((angle<-70 && angle>-110) && !gd) {
             gu = false;
@@ -482,7 +486,6 @@
             [voldown glow];
             [prev dim];
             seeking = false;
-            [player endSeeking];
             volumeTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(decVolume:) userInfo:nil repeats:YES];
         }
     }else {
@@ -496,7 +499,6 @@
         gd = false;
         gl = false;
         seeking = false;
-        [player endSeeking];
     }
 }
 
@@ -505,20 +507,16 @@
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    if(!longTouch){
-        CGPoint p = [((UITouch *)[touches allObjects][0]) locationInView:self.view];
-        float dist = (p.x-lastTouch.x)*(p.x-lastTouch.x)+(p.y-lastTouch.y)*(p.y-lastTouch.y);
-        if (dist<1024) {
-            [self playPause:nil];
-        }
-        [touchTimer invalidate];
-    }
-    [player endSeeking];
-    if (gr && !seeking) {
+    [touchTimer invalidate];
+    if(tapTouch) [self playPause:nil];
+    if (gr) {
         [self nextSong:nil];
-    }else if(gl && !seeking){
+    }else if(gl){
         [self prevSong:nil];
     }
+    /*if(!(gr||gl||gu||gd)){
+        [self playPause:nil];
+    }*/
     [UIView animateWithDuration:0.2 animations:^{
         overlay.alpha=0;
     }];
@@ -536,9 +534,9 @@
     gr = false;
     gd = false;
     gl = false;
+    
     touched = false;
     seeking = false;
-    longTouch = false;
     
     [volumeTimer invalidate];
     [seekTimer invalidate];

@@ -23,7 +23,7 @@
     NSTimer *volumeTimer;
     NSTimer *seekTimer;
     UIImageView *launcher;
-    BOOL longTouch, seeking,touched;
+    BOOL tapTouch, seeking,touched;
     BOOL gu,gr,gd,gl;
     int height,width;
 }
