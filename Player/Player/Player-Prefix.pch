@@ -48,7 +48,6 @@
 #define point(x,y) CGPointMake(x,y)
 #define rect(x,y,w,h) CGRectMake(x,y,w,h)
 
-
-//angle converting
+//angle conversion
 #define r2d(a) (a*180.0)/M_PI
 #define d2r(a) (a*M_PI)/180.0

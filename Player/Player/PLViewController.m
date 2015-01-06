@@ -39,6 +39,7 @@
 @synthesize currentLabel;
 @synthesize totaltime;
 @synthesize timeView;
+@synthesize timeViewBottom;
 
 #pragma mark -
 #pragma mark View Controller Methods
@@ -49,15 +50,14 @@
     return !touched && UD_getBool(@"tutorial");
 }
 
-
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    // reassign heaght and width according to orientation
-    if(toInterfaceOrientation == UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+    // reassign height and width according to orientation
+    if(toInterfaceOrientation ==   UIInterfaceOrientationLandscapeLeft || toInterfaceOrientation == UIInterfaceOrientationLandscapeRight) {
         width = self.view.frame.size.height;
         height = self.view.frame.size.width;
     }else {
-        width = self.view.frame.size.width;
-        height = self.view.frame.size.height;
+        width = self.view.frame.size.height;
+        height = self.view.frame.size.width;
     }
     // call for itemChangeCallback repositions song elements
     [self itemChangeCallback];
@@ -66,6 +66,11 @@
 
 - (void) viewDidLoad {
     [super viewDidLoad];
+    
+    self.playbackIndicator = [[UIView alloc] initWithFrame:rect(0,0,0,0)];
+    self.playbackIndicator.backgroundColor = hex(0x1c9ba0);
+    [self.view addSubview:playbackIndicator];
+    [self.view sendSubviewToBack:playbackIndicator];
     
     /* Rating alert */
     int opens = UD_getInt(@"opens") ? UD_getInt(@"opens") : 0;
@@ -97,13 +102,21 @@
         [self.view bringSubviewToFront:tutorial];
     }
     
-    
     /* A pseudo LaunchImage that fades out */
     launcher = [[UIImageView alloc] initWithFrame:rect(0, 0, 320, 568)];
     launcher.image = [UIImage imageNamed:@"s_l_i5.png"];
     launcher.center = point(160, height/2);
     launcher.alpha = 1;
     [self.view addSubview:launcher];
+    double delayInSeconds = 1.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [UIView animateWithDuration:0.3 animations:^{
+            launcher.alpha = 0;
+        } completion:^(BOOL finished) {
+            [launcher removeFromSuperview];
+        }];
+    });
     
     /* add dummy volume indicator */
     MPVolumeView *volumeView = [[MPVolumeView alloc] initWithFrame: rect(-1000, -1000, 0, 0)];
@@ -126,7 +139,7 @@
         artistLabel.alpha = 0;
         timeView.alpha = 0;
         
-        [songTitle setText:@"It seems you don't have any music in your library. Add some songs via itunes to use PLY."];
+        [songTitle setText:@"Looks like you don't have any music in your library. Add some songs to iTunes first."];
         [songTitle setTextColor:rgba(255, 255, 255, 200)];
         [songTitle setFont:[UIFont fontWithName:@"HelveticaNeue-Light" size:20]];
         songTitle.clipsToBounds = NO;
@@ -143,16 +156,13 @@
     self.visualizer = [[PLVisualizerView alloc] initWithFrame:self.view.frame];
     /*[_visualizer setAutoresizingMask:UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth];*/
     [self.backgroundView addSubview:_visualizer];
+    [self.visualizer stop];
     
     /* Circular artwork */
     artworkView.layer.masksToBounds = YES;
     artworkView.layer.cornerRadius  = 50.0f;
     artworkView.layer.borderWidth   = 2.0f;
     artworkView.layer.borderColor   = [rgba(210, 250, 255, 200) CGColor];
-    
-    
-    /* Start the player */
-    [player play];
     
     /* Hide the overlay view*/
     overlay.alpha = 0;
@@ -177,7 +187,7 @@
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSString *stringURL = @"http://orkestra.co/PLY/";
+    NSString *stringURL = @"http://ply.orkestra.co/";
     NSURL *url = [NSURL URLWithString:stringURL];
     switch (buttonIndex) {
         case 1:
@@ -295,7 +305,7 @@
          * which finds the artwork from last.fm API
          */
         NSError* error;
-        NSString* urlStr = format(@"http://hgeg.io/lastrk/?artwork=%@",
+        NSString* urlStr = format(@"http://ply.orkestra.co/?artwork=%@",
           [self urlencode:
            [NSString stringWithFormat:@"%@ %@",artistString, titleString]
           ]
@@ -303,7 +313,7 @@
         NSURL* URL = [NSURL URLWithString:urlStr];
         NSString *imageURL = [NSString stringWithContentsOfURL:URL encoding:NSASCIIStringEncoding error:&error];
         /* If fetching fails SDWebImage ensures that our placeholder is used */
-        [artworkView setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"default.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        [artworkView sd_setImageWithURL:[NSURL URLWithString:imageURL] placeholderImage:[UIImage imageNamed:@"default.png"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             /* Fade animation */
             CATransition *transition = [CATransition animation];
             transition.duration = 0.2f;
@@ -331,7 +341,8 @@
         [songTitle setTextAlignment:NSTextAlignmentCenter];
         
         float hoff = songTitle.frame.size.height - [songTitle sizeThatFits:CGSizeMake(songTitle.frame.size.width,songTitle.frame.size.height)].height;
-        timeView.center = point(timeView.center.x, songTitle.frame.origin.y+songTitle.frame.size.height-hoff+16);
+        //timeView.center = point(timeView.center.x, songTitle.frame.origin.y+songTitle.frame.size.height-hoff+16);
+        timeViewBottom.constant = hoff;
         
         currentLabel.text = @"00:00";
         [UIView animateWithDuration:0.2 animations:^{
@@ -339,15 +350,10 @@
             songTitle.alpha   = 1;
             timeView.alpha    = 1;
         }];
-        if(launcher.alpha>0)
-            [UIView animateWithDuration:0.3 animations:^{
-                launcher.alpha = 0;
-            } completion:^(BOOL finished) {
-                [launcher removeFromSuperview];
-            }];
+        [player play];
+        [self.visualizer start];
     }];
     
-    //[player play];
     
     /* Reset the indicator */
     [self updateIndicator];
@@ -362,17 +368,18 @@
     }else d = 1;
     [UIView animateWithDuration:d animations:^{
         @try {
-            playbackIndicator.frame = rect(0,height-8,[player currentPlaybackTime]*1.0*width/npDuration,8);
+            playbackIndicator.frame = rect(0,height-8,[player currentPlaybackTime]*1.0*width/npDuration+1,8);
             currentLabel.text = format(@"%.2d:%.2d",(int)([player currentPlaybackTime]/60),((int)[player currentPlaybackTime]%60));
-            
             if(playbackIndicator.frame.size.width<32) {
-                timeIndicator.center = point(32, height-40);
+                self.timerLeftSpace.constant = -17;
+                //timeIndicator.center = point(32, height-40);
                 timeIndicator.alpha = (playbackIndicator.frame.size.width)/40.0;
             } else if(playbackIndicator.frame.size.width>width-32) {
-                timeIndicator.center = point(width-32, height-40);
+                //timeIndicator.center = point(width-32, height-40);
                 timeIndicator.alpha = (width-playbackIndicator.frame.size.width)/40.0;
             } else {
-                timeIndicator.center = point(playbackIndicator.frame.size.width, height-40);
+                self.timerLeftSpace.constant = playbackIndicator.frame.size.width-49;
+                //timeIndicator.center = point(playbackIndicator.frame.size.width, height-40);
             }
         }
         @catch (NSException *exception) {
@@ -388,7 +395,6 @@
         touched = true;
         lastTouch = [((UITouch *)[[touches allObjects] lastObject]) locationInView:self.view];
         touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(showMenu) userInfo:nil repeats:NO];
-
     }
 }
 

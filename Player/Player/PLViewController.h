@@ -31,9 +31,10 @@
 @property (strong, nonatomic) PLVisualizerView *visualizer;
 
 @property (weak, nonatomic) IBOutlet UIView *backgroundView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *timerLeftSpace;
 @property (weak, nonatomic) IBOutlet UIImageView *statusImage;
 @property (weak, nonatomic) IBOutlet UIImageView *artworkView;
-@property (weak, nonatomic) IBOutlet UIView *playbackIndicator;
+@property (strong, nonatomic) IBOutlet UIView *playbackIndicator;
 @property (weak, nonatomic) IBOutlet UITextView *songTitle;
 @property (weak, nonatomic) IBOutlet UILabel *artistLabel;
 @property (weak, nonatomic) IBOutlet UIView *overlay;
@@ -43,6 +44,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *currentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *totaltime;
 @property (weak, nonatomic) IBOutlet UIView *timeView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *timeViewBottom;
 
 - (IBAction) playPause:(id)sender;
 - (IBAction) nextSong:(id)sender;
