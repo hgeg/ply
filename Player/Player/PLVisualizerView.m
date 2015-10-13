@@ -7,6 +7,7 @@
 //
 
 #import "PLVisualizerView.h"
+#import <AudioToolbox/AudioServices.h>
 #import <AVFoundation/AVFoundation.h>
 
 @implementation PLVisualizerView
@@ -20,7 +21,7 @@
         
         /* bunch of random particles */
         CGFloat height = MAX(frame.size.width, frame.size.height);
-        emitterLayer.emitterPosition = CGPointMake(-10,height/2);
+        emitterLayer.emitterPosition = CGPointMake(-20,height/2);
         emitterLayer.emitterSize = CGSizeMake(10, height);
         emitterLayer.emitterShape = kCAEmitterLayerRectangle;
         emitterLayer.renderMode = kCAEmitterLayerAdditive;
@@ -29,7 +30,7 @@
         cell.emissionLongitude = 0;
         cell.name = @"cell";
         cell.contents = (id)[[UIImage imageNamed:@"particleTexture.png"] CGImage];
-        cell.color = [[UIColor colorWithWhite:1.0 alpha:0.2] CGColor];
+        cell.color = [[UIColor colorWithWhite:0.9 alpha:0.1] CGColor];
         cell.redRange = 0.1f;
         cell.greenRange = 0.1f;
         cell.blueRange = 0.0f;

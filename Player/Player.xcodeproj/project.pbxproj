@@ -21,24 +21,10 @@
 		363FEEE717C4DF0100C21EA3 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 363FEEE617C4DF0100C21EA3 /* CoreMedia.framework */; };
 		363FEF1C17C5053200C21EA3 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 363FEF1B17C5053200C21EA3 /* ImageIO.framework */; };
 		363FEF1E17C5054700C21EA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 363FEF1D17C5054700C21EA3 /* MapKit.framework */; };
-		D46DAB9F185489A300FCFA95 /* UIFont+IBCustomFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = D46DAB9E185489A300FCFA95 /* UIFont+IBCustomFonts.m */; };
-		D46DABA318548ABD00FCFA95 /* Lato-Lig.otf in Resources */ = {isa = PBXBuildFile; fileRef = D46DABA118548ABD00FCFA95 /* Lato-Lig.otf */; };
-		D46DABA418548ABD00FCFA95 /* Lato-Reg.otf in Resources */ = {isa = PBXBuildFile; fileRef = D46DABA218548ABD00FCFA95 /* Lato-Reg.otf */; };
-		D46DABA618548D3800FCFA95 /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABA518548D3800FCFA95 /* placeholder.png */; };
-		D46DABAD1854965500FCFA95 /* next.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABA71854965500FCFA95 /* next.png */; };
-		D46DABAE1854965500FCFA95 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABA81854965500FCFA95 /* pause.png */; };
-		D46DABAF1854965500FCFA95 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABA91854965500FCFA95 /* play.png */; };
-		D46DABB01854965500FCFA95 /* prev.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABAA1854965500FCFA95 /* prev.png */; };
-		D46DABB11854965500FCFA95 /* vol_max.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABAB1854965500FCFA95 /* vol_max.png */; };
-		D46DABB21854965500FCFA95 /* vol_min.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABAC1854965500FCFA95 /* vol_min.png */; };
-		D46DABB418549D5100FCFA95 /* time_indicator.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABB318549D5100FCFA95 /* time_indicator.png */; };
-		D46DABB61854A6FC00FCFA95 /* total_time.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABB51854A6FC00FCFA95 /* total_time.png */; };
+		D4362E0B1BCDBB8C001F130A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4362E0A1BCDBB8C001F130A /* AudioToolbox.framework */; };
 		D46DABBD1854C8C100FCFA95 /* PLVisualizerView.m in Sources */ = {isa = PBXBuildFile; fileRef = D46DABBC1854C8C100FCFA95 /* PLVisualizerView.m */; };
 		D46DABC11854CC8900FCFA95 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D46DABBF1854CC8900FCFA95 /* CoreAudio.framework */; };
 		D46DABC31854CEC800FCFA95 /* particleTexture.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABC21854CEC800FCFA95 /* particleTexture.png */; };
-		D46DABC51854DB1600FCFA95 /* gradyan.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABC41854DB1600FCFA95 /* gradyan.png */; };
-		D46DABCB18551D7300FCFA95 /* tutorial.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABCA18551D7300FCFA95 /* tutorial.png */; };
-		D46DABCD18551E8B00FCFA95 /* s_l_i5.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABCC18551E8B00FCFA95 /* s_l_i5.png */; };
 		D46DABCF185526FF00FCFA95 /* default.png in Resources */ = {isa = PBXBuildFile; fileRef = D46DABCE185526FF00FCFA95 /* default.png */; };
 		D46DABD518555C5600FCFA95 /* ACRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = D46DABD418555C5600FCFA95 /* ACRequest.m */; };
 		D49A247F1A56087D00DE4A56 /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D49A245F1A56087D00DE4A56 /* MKAnnotationView+WebCache.m */; };
@@ -57,8 +43,14 @@
 		D49A248C1A56087D00DE4A56 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D49A247A1A56087D00DE4A56 /* UIImageView+HighlightedWebCache.m */; };
 		D49A248D1A56087D00DE4A56 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D49A247C1A56087D00DE4A56 /* UIImageView+WebCache.m */; };
 		D49A248E1A56087D00DE4A56 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = D49A247E1A56087D00DE4A56 /* UIView+WebCacheOperation.m */; };
-		D4A7AFDD1853D212007B1874 /* UIButton+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = D4A7AFDC1853D212007B1874 /* UIButton+Glow.m */; };
 		D4A7AFEB185421E5007B1874 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4A7AFEA185421E5007B1874 /* Images.xcassets */; };
+		D4B2596D1BC6EC690067B276 /* Spotify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4B2596C1BC6EC690067B276 /* Spotify.framework */; };
+		D4B2596E1BC6F47D0067B276 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 363FEEDE17C4DE6200C21EA3 /* AVFoundation.framework */; };
+		D4B259711BC73EFF0067B276 /* PLSpotifyController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B259701BC73EFF0067B276 /* PLSpotifyController.m */; };
+		D4B2597A1BC758A70067B276 /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D4B259791BC758A70067B276 /* ProximaNova-Bold.otf */; };
+		D4B2597B1BC758BF0067B276 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D4B259761BC755360067B276 /* ProximaNova-Regular.otf */; };
+		D4B2597C1BC758C30067B276 /* ProximaNova-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D4B259771BC755360067B276 /* ProximaNova-Semibold.otf */; };
+		D4B2597F1BC7B5560067B276 /* PLPlaylistSelectionController.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B2597E1BC7B5560067B276 /* PLPlaylistSelectionController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,26 +76,12 @@
 		363FEF1917C5052C00C21EA3 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		363FEF1B17C5053200C21EA3 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		363FEF1D17C5054700C21EA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		D46DAB9E185489A300FCFA95 /* UIFont+IBCustomFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+IBCustomFonts.m"; sourceTree = "<group>"; };
-		D46DABA118548ABD00FCFA95 /* Lato-Lig.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Lig.otf"; sourceTree = "<group>"; };
-		D46DABA218548ABD00FCFA95 /* Lato-Reg.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Lato-Reg.otf"; sourceTree = "<group>"; };
-		D46DABA518548D3800FCFA95 /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
-		D46DABA71854965500FCFA95 /* next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = next.png; sourceTree = "<group>"; };
-		D46DABA81854965500FCFA95 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
-		D46DABA91854965500FCFA95 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
-		D46DABAA1854965500FCFA95 /* prev.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = prev.png; sourceTree = "<group>"; };
-		D46DABAB1854965500FCFA95 /* vol_max.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vol_max.png; sourceTree = "<group>"; };
-		D46DABAC1854965500FCFA95 /* vol_min.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vol_min.png; sourceTree = "<group>"; };
-		D46DABB318549D5100FCFA95 /* time_indicator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = time_indicator.png; sourceTree = "<group>"; };
-		D46DABB51854A6FC00FCFA95 /* total_time.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = total_time.png; sourceTree = "<group>"; };
+		D4362E0A1BCDBB8C001F130A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D46DABBB1854C8C100FCFA95 /* PLVisualizerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLVisualizerView.h; sourceTree = "<group>"; };
 		D46DABBC1854C8C100FCFA95 /* PLVisualizerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLVisualizerView.m; sourceTree = "<group>"; };
 		D46DABBE1854CC8900FCFA95 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
 		D46DABBF1854CC8900FCFA95 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		D46DABC21854CEC800FCFA95 /* particleTexture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = particleTexture.png; sourceTree = "<group>"; };
-		D46DABC41854DB1600FCFA95 /* gradyan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gradyan.png; sourceTree = "<group>"; };
-		D46DABCA18551D7300FCFA95 /* tutorial.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tutorial.png; sourceTree = "<group>"; };
-		D46DABCC18551E8B00FCFA95 /* s_l_i5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = s_l_i5.png; sourceTree = "<group>"; };
 		D46DABCE185526FF00FCFA95 /* default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = default.png; sourceTree = "<group>"; };
 		D46DABD318555C5600FCFA95 /* ACRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACRequest.h; sourceTree = "<group>"; };
 		D46DABD418555C5600FCFA95 /* ACRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACRequest.m; sourceTree = "<group>"; };
@@ -140,9 +118,15 @@
 		D49A247C1A56087D00DE4A56 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		D49A247D1A56087D00DE4A56 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		D49A247E1A56087D00DE4A56 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
-		D4A7AFDB1853D212007B1874 /* UIButton+Glow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+Glow.h"; sourceTree = "<group>"; };
-		D4A7AFDC1853D212007B1874 /* UIButton+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+Glow.m"; sourceTree = "<group>"; };
 		D4A7AFEA185421E5007B1874 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PLY/Images.xcassets; sourceTree = "<group>"; };
+		D4B2596C1BC6EC690067B276 /* Spotify.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Spotify.framework; sourceTree = "<group>"; };
+		D4B2596F1BC73EFF0067B276 /* PLSpotifyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLSpotifyController.h; sourceTree = "<group>"; };
+		D4B259701BC73EFF0067B276 /* PLSpotifyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLSpotifyController.m; sourceTree = "<group>"; };
+		D4B259761BC755360067B276 /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Regular.otf"; sourceTree = "<group>"; };
+		D4B259771BC755360067B276 /* ProximaNova-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Semibold.otf"; sourceTree = "<group>"; };
+		D4B259791BC758A70067B276 /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Bold.otf"; sourceTree = "<group>"; };
+		D4B2597D1BC7B5560067B276 /* PLPlaylistSelectionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPlaylistSelectionController.h; sourceTree = "<group>"; };
+		D4B2597E1BC7B5560067B276 /* PLPlaylistSelectionController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPlaylistSelectionController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +134,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4362E0B1BCDBB8C001F130A /* AudioToolbox.framework in Frameworks */,
+				D4B2596E1BC6F47D0067B276 /* AVFoundation.framework in Frameworks */,
 				D46DABC11854CC8900FCFA95 /* CoreAudio.framework in Frameworks */,
 				363FEF1E17C5054700C21EA3 /* MapKit.framework in Frameworks */,
 				363FEF1C17C5053200C21EA3 /* ImageIO.framework in Frameworks */,
@@ -160,6 +146,7 @@
 				363FECDC17C4D5B000C21EA3 /* UIKit.framework in Frameworks */,
 				363FECDE17C4D5B000C21EA3 /* Foundation.framework in Frameworks */,
 				363FECE017C4D5B000C21EA3 /* CoreGraphics.framework in Frameworks */,
+				D4B2596D1BC6EC690067B276 /* Spotify.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +174,8 @@
 		363FECDA17C4D5B000C21EA3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D4362E0A1BCDBB8C001F130A /* AudioToolbox.framework */,
+				D4B2596C1BC6EC690067B276 /* Spotify.framework */,
 				D46DABBE1854CC8900FCFA95 /* AudioUnit.framework */,
 				D46DABBF1854CC8900FCFA95 /* CoreAudio.framework */,
 				363FEF1D17C5054700C21EA3 /* MapKit.framework */,
@@ -212,11 +201,15 @@
 				D49A245D1A56087D00DE4A56 /* SDWebImage */,
 				363FECEA17C4D5B000C21EA3 /* PLAppDelegate.h */,
 				363FECEB17C4D5B000C21EA3 /* PLAppDelegate.m */,
+				D4B2596F1BC73EFF0067B276 /* PLSpotifyController.h */,
+				D4B259701BC73EFF0067B276 /* PLSpotifyController.m */,
 				363FECF317C4D5B100C21EA3 /* MainStoryboard.storyboard */,
 				D46DABBB1854C8C100FCFA95 /* PLVisualizerView.h */,
 				D46DABBC1854C8C100FCFA95 /* PLVisualizerView.m */,
 				363FECF617C4D5B100C21EA3 /* PLViewController.h */,
 				363FECF717C4D5B100C21EA3 /* PLViewController.m */,
+				D4B2597D1BC7B5560067B276 /* PLPlaylistSelectionController.h */,
+				D4B2597E1BC7B5560067B276 /* PLPlaylistSelectionController.m */,
 				363FECE217C4D5B000C21EA3 /* Supporting Files */,
 			);
 			path = Player;
@@ -225,7 +218,7 @@
 		363FECE217C4D5B000C21EA3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				D46DABA018548AAD00FCFA95 /* Lato */,
+				D4B259781BC7553B0067B276 /* Proxima */,
 				363FEF1217C5034300C21EA3 /* Assets */,
 				363FECE317C4D5B000C21EA3 /* Player-Info.plist */,
 				363FECE417C4D5B000C21EA3 /* InfoPlist.strings */,
@@ -239,30 +232,9 @@
 			isa = PBXGroup;
 			children = (
 				D46DABCE185526FF00FCFA95 /* default.png */,
-				D46DABCC18551E8B00FCFA95 /* s_l_i5.png */,
-				D46DABCA18551D7300FCFA95 /* tutorial.png */,
 				D46DABC21854CEC800FCFA95 /* particleTexture.png */,
-				D46DABB51854A6FC00FCFA95 /* total_time.png */,
-				D46DABB318549D5100FCFA95 /* time_indicator.png */,
-				D46DABA518548D3800FCFA95 /* placeholder.png */,
-				D46DABA71854965500FCFA95 /* next.png */,
-				D46DABA81854965500FCFA95 /* pause.png */,
-				D46DABA91854965500FCFA95 /* play.png */,
-				D46DABAA1854965500FCFA95 /* prev.png */,
-				D46DABAB1854965500FCFA95 /* vol_max.png */,
-				D46DABAC1854965500FCFA95 /* vol_min.png */,
-				D46DABC41854DB1600FCFA95 /* gradyan.png */,
 			);
 			name = Assets;
-			sourceTree = "<group>";
-		};
-		D46DABA018548AAD00FCFA95 /* Lato */ = {
-			isa = PBXGroup;
-			children = (
-				D46DABA118548ABD00FCFA95 /* Lato-Lig.otf */,
-				D46DABA218548ABD00FCFA95 /* Lato-Reg.otf */,
-			);
-			name = Lato;
 			sourceTree = "<group>";
 		};
 		D49A245D1A56087D00DE4A56 /* SDWebImage */ = {
@@ -310,11 +282,18 @@
 			children = (
 				D46DABD318555C5600FCFA95 /* ACRequest.h */,
 				D46DABD418555C5600FCFA95 /* ACRequest.m */,
-				D46DAB9E185489A300FCFA95 /* UIFont+IBCustomFonts.m */,
-				D4A7AFDB1853D212007B1874 /* UIButton+Glow.h */,
-				D4A7AFDC1853D212007B1874 /* UIButton+Glow.m */,
 			);
 			name = Libraries;
+			sourceTree = "<group>";
+		};
+		D4B259781BC7553B0067B276 /* Proxima */ = {
+			isa = PBXGroup;
+			children = (
+				D4B259761BC755360067B276 /* ProximaNova-Regular.otf */,
+				D4B259771BC755360067B276 /* ProximaNova-Semibold.otf */,
+				D4B259791BC758A70067B276 /* ProximaNova-Bold.otf */,
+			);
+			name = Proxima;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -344,7 +323,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = PL;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Can Bülbül";
 				TargetAttributes = {
 					363FECD717C4D5B000C21EA3 = {
@@ -374,25 +353,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D46DABAD1854965500FCFA95 /* next.png in Resources */,
+				D4B2597B1BC758BF0067B276 /* ProximaNova-Regular.otf in Resources */,
+				D4B2597C1BC758C30067B276 /* ProximaNova-Semibold.otf in Resources */,
 				363FECE617C4D5B000C21EA3 /* InfoPlist.strings in Resources */,
-				D46DABB21854965500FCFA95 /* vol_min.png in Resources */,
-				D46DABAF1854965500FCFA95 /* play.png in Resources */,
-				D46DABC51854DB1600FCFA95 /* gradyan.png in Resources */,
 				D46DABCF185526FF00FCFA95 /* default.png in Resources */,
-				D46DABCD18551E8B00FCFA95 /* s_l_i5.png in Resources */,
-				D46DABAE1854965500FCFA95 /* pause.png in Resources */,
-				D46DABA318548ABD00FCFA95 /* Lato-Lig.otf in Resources */,
 				D46DABC31854CEC800FCFA95 /* particleTexture.png in Resources */,
-				D46DABCB18551D7300FCFA95 /* tutorial.png in Resources */,
 				D4A7AFEB185421E5007B1874 /* Images.xcassets in Resources */,
-				D46DABB11854965500FCFA95 /* vol_max.png in Resources */,
-				D46DABB01854965500FCFA95 /* prev.png in Resources */,
+				D4B2597A1BC758A70067B276 /* ProximaNova-Bold.otf in Resources */,
 				363FECF517C4D5B100C21EA3 /* MainStoryboard.storyboard in Resources */,
-				D46DABA618548D3800FCFA95 /* placeholder.png in Resources */,
-				D46DABA418548ABD00FCFA95 /* Lato-Reg.otf in Resources */,
-				D46DABB418549D5100FCFA95 /* time_indicator.png in Resources */,
-				D46DABB61854A6FC00FCFA95 /* total_time.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -409,6 +377,7 @@
 				D49A24881A56087D00DE4A56 /* UIButton+WebCache.m in Sources */,
 				D49A248A1A56087D00DE4A56 /* UIImage+MultiFormat.m in Sources */,
 				D49A24871A56087D00DE4A56 /* SDWebImagePrefetcher.m in Sources */,
+				D4B259711BC73EFF0067B276 /* PLSpotifyController.m in Sources */,
 				363FECE817C4D5B000C21EA3 /* main.m in Sources */,
 				D49A248E1A56087D00DE4A56 /* UIView+WebCacheOperation.m in Sources */,
 				D49A247F1A56087D00DE4A56 /* MKAnnotationView+WebCache.m in Sources */,
@@ -417,11 +386,10 @@
 				D49A24851A56087D00DE4A56 /* SDWebImageDownloaderOperation.m in Sources */,
 				D49A24831A56087D00DE4A56 /* SDWebImageDecoder.m in Sources */,
 				363FECF817C4D5B100C21EA3 /* PLViewController.m in Sources */,
+				D4B2597F1BC7B5560067B276 /* PLPlaylistSelectionController.m in Sources */,
 				D49A248C1A56087D00DE4A56 /* UIImageView+HighlightedWebCache.m in Sources */,
 				D49A24801A56087D00DE4A56 /* NSData+ImageContentType.m in Sources */,
 				D49A24841A56087D00DE4A56 /* SDWebImageDownloader.m in Sources */,
-				D46DAB9F185489A300FCFA95 /* UIFont+IBCustomFonts.m in Sources */,
-				D4A7AFDD1853D212007B1874 /* UIButton+Glow.m in Sources */,
 				D46DABD518555C5600FCFA95 /* ACRequest.m in Sources */,
 				D49A24861A56087D00DE4A56 /* SDWebImageManager.m in Sources */,
 				D46DABBD1854C8C100FCFA95 /* PLVisualizerView.m in Sources */,
@@ -465,6 +433,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -476,7 +445,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -500,7 +469,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -512,14 +481,24 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Taner Yildirim (22R85DDBLV)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Taner Yildirim (677762377T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Taner Yildirim (677762377T)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Player/Player-Prefix.pch";
 				INFOPLIST_FILE = "Player/Player-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = (
+					"$(OTHER_LDFLAGS)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.orkestra.player;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d75357a3-21e2-4755-940a-f75ae372448b";
+				PROVISIONING_PROFILE = "e3f250d5-c937-4c84-a181-a5468cf33646";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -530,14 +509,24 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Taner Yildirim (22R85DDBLV)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Taner Yildirim (677762377T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Taner Yildirim (677762377T)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Player/Player-Prefix.pch";
 				INFOPLIST_FILE = "Player/Player-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				OTHER_LDFLAGS = (
+					"$(OTHER_LDFLAGS)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.orkestra.player;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "d75357a3-21e2-4755-940a-f75ae372448b";
+				PROVISIONING_PROFILE = "e3f250d5-c937-4c84-a181-a5468cf33646";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

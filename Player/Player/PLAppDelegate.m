@@ -7,7 +7,7 @@
 //
 
 #import "PLAppDelegate.h"
-#import "ACRequest.h"
+#import "PLSpotifyController.h"
 
 @implementation PLAppDelegate
 
@@ -15,10 +15,7 @@
 {
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
-    [[MPMusicPlayerController iPodMusicPlayer] pause];
-    [UIApplication sharedApplication].idleTimerDisabled = true;
-    [MPMusicPlayerController iPodMusicPlayer].shuffleMode = MPMusicShuffleModeSongs;
-    [[[ACRequest alloc] init] sendAppOpen];
+    
     return YES;
 }
 							
@@ -46,7 +43,6 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    [MPMusicPlayerController iPodMusicPlayer].shuffleMode = MPMusicShuffleModeSongs;
     [UIApplication sharedApplication].idleTimerDisabled = true;
 }
 
@@ -55,6 +51,33 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     [UIApplication sharedApplication].idleTimerDisabled = false;
     //[[MPMusicPlayerController iPodMusicPlayer] stop];
+}
+
+-(BOOL)application:(UIApplication *)application
+           openURL:(NSURL *)url
+ sourceApplication:(NSString *)sourceApplication
+        annotation:(id)annotation {
+    
+    // Ask SPTAuth if the URL given is a Spotify authentication callback
+    if ([[SPTAuth defaultInstance] canHandleURL:url]) {
+        [[SPTAuth defaultInstance] handleAuthCallbackWithTriggeredAuthURL:url callback:^(NSError *error, SPTSession *session) {
+            
+            if (error != nil) {
+                NSLog(@"*** Auth error: %@", error);
+                NC_postNotification(@"AUTH_ERROR", @{@"session":@"ERROR"});
+                return;
+            }
+            
+            [PLSpotifyController defaultController].session = session;
+            [SPTAuth defaultInstance].session = session;
+            [PLSpotifyController defaultController].player = [[SPTAudioStreamingController alloc] initWithClientId:[SPTAuth defaultInstance].clientID];
+            
+            NC_postNotification(@"AUTH_OK", @{@"session":session});
+        }];
+        return YES;
+    }
+    
+    return NO;
 }
 
 @end

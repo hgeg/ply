@@ -42,7 +42,7 @@
 //Notification Center management
 
 #define NC_addObserver(n,sel) [[NSNotificationCenter defaultCenter] addObserver:self selector:sel name:n object:nil]
-#define NC_postNotification(n,obj) [[NSNotificationCenter defaultCenter] postNotificationName:n object:obj]
+#define NC_postNotification(n,info) [[NSNotificationCenter defaultCenter] postNotificationName:n object:self userInfo:info]
 
 //CGShapes
 #define point(x,y) CGPointMake(x,y)
